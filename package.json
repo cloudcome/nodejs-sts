@@ -1,6 +1,6 @@
 {
   "name": "sts",
-  "version": "0.0.2",
+  "version": "0.0.9",
   "description": "STATIC SERVER => sts",
   "main": "sts.js",
   "keywords": [
@@ -16,6 +16,9 @@
   "repository": {
     "type": "git",
     "url": "https://github.com/cloudcome/nodejs-sts"
+  },
+  "bin": {
+    "sts": "./bin/sts.js"
   },
   "license": "MIT",
   "readmeFilename": "readme.md"

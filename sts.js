@@ -10,7 +10,25 @@
 var WEBROOT = __dirname;
 var DEFAULTFILE = 'index.html';
 var args = process.argv.slice(2);
+
+if (args.length < 1) {
+    console.log('############################################################');
+    console.log('Please set static server PORT, like 18080!');
+    console.log('Use `sts 18080 my static server` to start!');
+    console.log('############################################################');
+    return;
+}
+
 var PORT = args.shift();
+
+if(!/^\d+$/.test(PORT)){
+    console.log('############################################################');
+    console.log('The static server PORT must be a number, like 18080!');
+    console.log('Use `sts 18080 my static server` to start!');
+    console.log('############################################################');
+    return;
+}
+
 var NAME = args.join(' ') || 'static server';
 
 
@@ -69,16 +87,12 @@ http.createServer(function(request, response) {
         }
     });
 }).listen(PORT, function() {
-    console.log('');
     console.log('############################################################');
     console.log(NAME + ' URL: http://localhost:' + PORT);
     console.log('############################################################');
-    console.log('');
 }).on('error', function(e) {
-    console.log('');
     console.log('############################################################');
     console.log(NAME + ' ERROR:');
     console.log(e.stack);
     console.log('############################################################');
-    console.log('');
 });
