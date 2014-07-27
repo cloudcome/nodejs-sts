@@ -1,0 +1,22 @@
+{
+  "name": "sts",
+  "version": "0.0.2",
+  "description": "STATIC SERVER => sts",
+  "main": "sts.js",
+  "keywords": [
+    "static",
+    "server",
+    "sts"
+  ],
+  "author": {
+    "name": "cloudcome",
+    "email": "cloudcome@163.com",
+    "url": "http://ydr.me/"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/cloudcome/nodejs-sts"
+  },
+  "license": "MIT",
+  "readmeFilename": "readme.md"
+}
