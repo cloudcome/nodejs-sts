@@ -1,5 +1,11 @@
 'use strict';
 
+var url2 = require('url');
+var http = require('http');
+var path = require('path');
+var fs = require('fs');
+var lib = require('./lib.js');
+
 
 
 ///////////////////////////////////////////////////////////////////
@@ -7,7 +13,7 @@
 //////////////////////////【配置】/////////////////////////////////
 ///////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////
-var WEBROOT = __dirname;
+var WEBROOT = process.cwd();
 var DEFAULTFILE = 'index.html';
 var args = process.argv.slice(2);
 
@@ -21,7 +27,7 @@ if (args.length < 1) {
 
 var PORT = args.shift();
 
-if(!/^\d+$/.test(PORT)){
+if (!/^\d+$/.test(PORT)) {
     console.log('############################################################');
     console.log('The static server PORT must be a number, like 18080!');
     console.log('Use `sts 18080 my static server` to start!');
@@ -29,7 +35,7 @@ if(!/^\d+$/.test(PORT)){
     return;
 }
 
-var NAME = args.join(' ') || 'static server';
+var NAME = args.join(' ') || path.basename(WEBROOT);
 
 
 
@@ -40,11 +46,6 @@ var NAME = args.join(' ') || 'static server';
 //////////////////////////【实现】/////////////////////////////////
 ///////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////
-var url2 = require('url');
-var http = require('http');
-var path = require('path');
-var fs = require('fs');
-var lib = require('./lib.js');
 var reg = /^\./;
 
 http.createServer(function(request, response) {
@@ -60,10 +61,10 @@ http.createServer(function(request, response) {
     // 开头打点了，说明是想访问父级目录，绝对禁止
     if (reg.test(relative)) return lib['500'](response, '非法操作');
 
-    fs.lstat(filepath, function(e, stats) {
-        if (e) {
-            lib['404'](response);
-        } else if (stats.isDirectory() || stats.isSymbolicLink()) {
+    fs.lstat(filepath, function(err, stats) {
+        if (err) return lib['404'](response);
+
+        if (stats.isDirectory() || stats.isSymbolicLink()) {
 
             if (lastChar !== '/') return lib['302'](response, pathname + '/' + search);
 
