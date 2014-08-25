@@ -5,9 +5,9 @@ var http = require('http');
 var path = require('path');
 var fs = require('fs');
 var lib = require('./lib.js');
-var markdown = require('markdown-parse');
-var template = fs.readFileSync('./markdown-template.html', 'utf8');
-var regTemplate = /{{markdown}}/;
+var markdown = require('marked');
+var highlight = require('highlight.js');
+var pkg = require('./package.json');
 
 
 ///////////////////////////////////////////////////////////////////
@@ -19,7 +19,13 @@ var WEBROOT = process.cwd();
 var DEFAULTFILE = 'index.html';
 var args = process.argv.slice(2);
 
-if (args.length < 1) {
+
+if (args[0] && args[0].toLowerCase() === '-v') {
+    console.log('############################################################');
+    console.log('sts version = ' + pkg.version);
+    console.log('############################################################');
+    return;
+} else if (args.length < 1) {
     console.log('############################################################');
     console.log('Please set static server PORT, like 18080!');
     console.log('Use `sts 18080 my static server` to start!');
@@ -29,6 +35,7 @@ if (args.length < 1) {
 
 var PORT = args.shift();
 
+
 if (!/^\d+$/.test(PORT)) {
     console.log('############################################################');
     console.log('The static server PORT must be a number, like 18080!');
@@ -37,8 +44,6 @@ if (!/^\d+$/.test(PORT)) {
     return;
 }
 
-var NAME = args.join(' ') || path.basename(WEBROOT);
-
 
 ///////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////
@@ -46,6 +51,16 @@ var NAME = args.join(' ') || path.basename(WEBROOT);
 ///////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////
 var reg = /^\./;
+var NAME = args.join(' ') || path.basename(WEBROOT);
+var template = fs.readFileSync(path.join(__dirname, './markdown-template.html'), 'utf8');
+var regTemplate = /{{markdown}}/;
+
+markdown.setOptions({
+    highlight: function (code) {
+        return highlight.highlightAuto(code).value;
+    }
+});
+
 
 http.createServer(function (request, response) {
     var url = request.url;
@@ -91,12 +106,12 @@ http.createServer(function (request, response) {
             });
             if (['.md', '.markdown'].indexOf(extname) > -1) {
                 var text = fs.readFileSync(filepath, 'utf8');
-                var html = markdown(text, function (err, ret) {
+                markdown(text, function (err, html) {
                     if (err) {
                         return lib['500'](response, err.message);
                     }
 
-                    response.end(template.replace(regTemplate, ret.html));
+                    response.end(template.replace(regTemplate, html));
                 });
             } else {
                 fs.createReadStream(filepath).pipe(response);

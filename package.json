@@ -1,6 +1,6 @@
 {
   "name": "sts",
-  "version": "0.0.13",
+  "version": "0.0.17",
   "description": "STATIC SERVER => sts",
   "main": "sts.js",
   "keywords": [
@@ -23,6 +23,7 @@
   "license": "MIT",
   "readmeFilename": "readme.md",
   "dependencies": {
-    "markdown-parse": "^0.2.1"
+    "highlight.js": "^8.2.0",
+    "marked": "^0.3.2"
   }
 }
