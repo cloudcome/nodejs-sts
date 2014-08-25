@@ -52,8 +52,12 @@ if (!/^\d+$/.test(PORT)) {
 ///////////////////////////////////////////////////////////////////
 var reg = /^\./;
 var NAME = args.join(' ') || path.basename(WEBROOT);
-var template = fs.readFileSync(path.join(__dirname, './markdown-template.html'), 'utf8');
-var regTemplate = /{{markdown}}/;
+var template = fs.readFileSync(path.join(__dirname, './static/tpl.html'), 'utf8');
+var style = fs.readFileSync(path.join(__dirname, './static/style.css'), 'utf8').replace(/\s+/g, ' ')
+    .replace(/[\n\r\t]/g, '');
+template = template.replace(/{{style}}/, '<style>' + style + '</style>');
+var regBody = /{{body}}/;
+var regTitle = /{{title}}/;
 
 markdown.setOptions({
     highlight: function (code) {
@@ -68,6 +72,7 @@ http.createServer(function (request, response) {
     var pathname = parse.pathname;
     var search = parse.search || '';
     var lastChar = pathname.slice(-1);
+    var basename = path.basename(pathname);
     var extname = path.extname(pathname).toLowerCase();
     var filepath = path.join(WEBROOT, pathname);
     var relative = path.relative(WEBROOT, filepath);
@@ -111,7 +116,7 @@ http.createServer(function (request, response) {
                         return lib['500'](response, err.message);
                     }
 
-                    response.end(template.replace(regTemplate, html));
+                    response.end(template.replace(regBody, html).replace(regTitle, basename));
                 });
             } else {
                 fs.createReadStream(filepath).pipe(response);
