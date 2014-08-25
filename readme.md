@@ -19,7 +19,7 @@ sts 18080 your server name
 
 
 # VERSION
-## v0.0.12
+## v0.0.13
 * 增加了对markdown文件的支持，支持`.md`和`.markdown`两种文件后缀
 
 ## v0.0.1
