@@ -24,4 +24,3 @@ sts 18080 your server name
 
 ## v0.0.1
 * 支持了全局安装以及路径适配
-* [链接](http://123.com)
