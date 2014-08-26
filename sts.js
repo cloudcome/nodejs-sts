@@ -22,6 +22,7 @@ var args = process.argv.slice(2);
 
 if (args[0] && args[0].toLowerCase() === '-v') {
     console.log('############################################################');
+    console.log('STATIC TRUSTED SERVER => sts');
     console.log('sts version = ' + pkg.version);
     console.log('############################################################');
     return;
