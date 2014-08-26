@@ -1,5 +1,5 @@
 #sts [![NPM version](https://img.shields.io/npm/v/sts.svg?style=flat)](https://npmjs.org/package/sts)
-STATIC SERVER => sts
+**S**TATIC **T**RUSTED **S**ERVER => sts
 
 
 # INSTALL
@@ -9,6 +9,7 @@ npm i sts -g
 
 # USAGE
 ```
+sts -v 
 cd your directory
 sts 18080 your server name
 ```
@@ -19,8 +20,13 @@ sts 18080 your server name
 
 
 # VERSION
-## v0.0.13
-* 增加了对markdown文件的支持，支持`.md`和`.markdown`两种文件后缀
+## v0.1.0
+* **S**TATIC **T**RUSTED **S**ERVER => sts
+
+## v0.0.19
+* 增加了对markdown文件的支持，支持`.md`、`.mkd`、`.markdown`3种文件后缀
+* 增加输出版本号
+* 修复了部分BUG
 
 ## v0.0.1
 * 支持了全局安装以及路径适配

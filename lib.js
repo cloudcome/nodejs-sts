@@ -33,5 +33,5 @@ module.exports = {
             'location': to || '/'
         });
         response.end();
-    },
+    }
 };

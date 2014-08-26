@@ -9,16 +9,16 @@ body {
     margin: 0;
     padding: 0;
     background: #f5f5f5;
-    font: 14px/1.4 'Microsoft YaHei UI', 'microsoft yahei', Helvetica, arial, freesans, clean, sans-serif;
+    font: 14px/1.6 'Microsoft YaHei UI', 'microsoft yahei', Helvetica, arial, freesans, clean, sans-serif;
     color: #333;
     word-wrap: break-word;
 }
 
 #body {
     max-width: 1000px;
-    margin: 40px auto 10px;
+    margin: 0 auto;
     background: #FFF;
-    padding: 20px 30px;
+    padding: 40px 30px;
     box-shadow: 0 0 10px #C2C2C2;
 }
 

@@ -1,29 +1,31 @@
 {
-  "name": "sts",
-  "version": "0.0.19",
-  "description": "STATIC SERVER => sts",
-  "main": "sts.js",
-  "keywords": [
-    "static",
-    "server",
-    "sts"
-  ],
-  "author": {
-    "name": "cloudcome",
-    "email": "cloudcome@163.com",
-    "url": "http://ydr.me/"
-  },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/cloudcome/nodejs-sts"
-  },
-  "bin": {
-    "sts": "./bin/sts.js"
-  },
-  "license": "MIT",
-  "readmeFilename": "readme.md",
-  "dependencies": {
-    "highlight.js": "^8.2.0",
-    "marked": "^0.3.2"
-  }
+    "name": "sts",
+    "version": "0.1.0",
+    "description": "STATIC TRUSTED SERVER => sts",
+    "main": "sts.js",
+    "keywords": [
+        "static",
+        "trusted",
+        "server",
+        "sts"
+    ],
+    "author": {
+        "name": "cloudcome",
+        "email": "cloudcome@163.com",
+        "url": "http://ydr.me/"
+    },
+    "homepage": "https://github.com/cloudcome/nodejs-sts",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/cloudcome/nodejs-sts"
+    },
+    "bin": {
+        "sts": "./bin/sts.js"
+    },
+    "license": "MIT",
+    "readmeFilename": "readme.md",
+    "dependencies": {
+        "highlight.js": "^8.2.0",
+        "marked": "^0.3.2"
+    }
 }
