@@ -20,7 +20,7 @@ sts 18080 your server name
 
 
 # VERSION
-## v0.1.0
+## v0.1.1
 * **S**TATIC **T**RUSTED **S**ERVER => sts
 
 ## v0.0.19

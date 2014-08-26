@@ -27,6 +27,7 @@ if (args[0] && args[0].toLowerCase() === '-v') {
     return;
 } else if (args.length < 1) {
     console.log('############################################################');
+    console.log('STATIC TRUSTED SERVER => sts');
     console.log('Please set static server PORT, like 18080!');
     console.log('Use `sts 18080 my static server` to start!');
     console.log('############################################################');
@@ -38,6 +39,7 @@ var PORT = args.shift();
 
 if (!/^\d+$/.test(PORT)) {
     console.log('############################################################');
+    console.log('STATIC TRUSTED SERVER => sts');
     console.log('The static server PORT must be a number, like 18080!');
     console.log('Use `sts 18080 my static server` to start!');
     console.log('############################################################');
@@ -127,11 +129,13 @@ http.createServer(function (request, response) {
     });
 }).listen(PORT, function () {
     console.log('############################################################');
+    console.log('STATIC TRUSTED SERVER => sts');
     console.log(NAME + ' URL: http://localhost:' + PORT);
     console.log('############################################################');
 }).on('error', function (e) {
     console.log('############################################################');
+    console.log('STATIC TRUSTED SERVER => sts');
     console.log(NAME + ' ERROR:');
-    console.log(e.stack);
+    console.log(e.stack || 'unknow stack');
     console.log('############################################################');
 });
