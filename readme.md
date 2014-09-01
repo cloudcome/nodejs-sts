@@ -20,6 +20,12 @@ sts 18080 your server name
 
 
 # VERSION
+## v0.1.4
+* 更新了404、500的描述
+* 修复了`点文件夹`的访问BUG
+* 更新了markdown文件的样式
+* 增加LOG记录
+
 ## v0.1.3
 * **S**TATIC **T**RUSTED **S**ERVER => sts
 

@@ -53,7 +53,6 @@ if (!/^\d+$/.test(PORT)) {
 //////////////////////////【实现】/////////////////////////////////
 ///////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////
-var reg = /^\./;
 var NAME = args.join(' ') || path.basename(WEBROOT);
 var template = fs.readFileSync(path.join(__dirname, './static/tpl.html'), 'utf8');
 var style = fs.readFileSync(path.join(__dirname, './static/style.css'), 'utf8').replace(/\s+/g, ' ')
@@ -61,6 +60,7 @@ var style = fs.readFileSync(path.join(__dirname, './static/style.css'), 'utf8').
 template = template.replace(/{{style}}/, '<style>' + style + '</style>');
 var regBody = /{{body}}/;
 var regTitle = /{{title}}/;
+var regParentPath = /^\.\.[\/\\]/;
 
 markdown.setOptions({
     highlight: function (code) {
@@ -80,9 +80,17 @@ http.createServer(function (request, response) {
     var filepath = path.join(WEBROOT, pathname);
     var relative = path.relative(WEBROOT, filepath);
 
-    // 开头打点了，说明是想访问父级目录，绝对禁止
-    if (reg.test(relative)) {
-        return lib['500'](response, '非法操作');
+    lib.log(request.method + ' <=', url);
+    lib.log('PARSE =>', filepath);
+
+    // 只接受 GET 和 POST 请求
+    if (request.method !== 'GET' && request.method !== 'POST') {
+        return lib['403'](response, 'Forbidden');
+    }
+
+    // 开头为 ..\ 或者 ../，说明是想访问父级目录，绝对禁止
+    if (regParentPath.test(relative)) {
+        return lib['403'](response, 'Forbidden');
     }
 
     fs.lstat(filepath, function (err, stats) {
@@ -104,13 +112,13 @@ http.createServer(function (request, response) {
                 }
 
                 response.writeHead(200, {
-                    'content-type': lib.getMime('.html')
+                    'content-type': lib.getMime('.html') + '; charset=utf-8'
                 });
                 fs.createReadStream(filepath).pipe(response);
             });
         } else if (stats.isFile()) {
             response.writeHead(200, {
-                'content-type': lib.getMime(extname)
+                'content-type': lib.getMime(extname) + '; charset=utf-8'
             });
             if (['.md', '.markdown'].indexOf(extname) > -1) {
                 var text = fs.readFileSync(filepath, 'utf8');
@@ -133,10 +141,12 @@ http.createServer(function (request, response) {
     console.log('STATIC TRUSTED SERVER => sts');
     console.log(NAME + ' URL: http://localhost:' + PORT);
     console.log('############################################################');
+    console.log();
 }).on('error', function (e) {
     console.log('############################################################');
     console.log('STATIC TRUSTED SERVER => sts');
     console.log(NAME + ' ERROR:');
     console.log(e.stack || 'unknow stack');
     console.log('############################################################');
+    console.log();
 });
