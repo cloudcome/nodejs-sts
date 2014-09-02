@@ -40,5 +40,9 @@ module.exports = {
             event = ' ' + event;
         }
         console.log(event + ' ' + message);
+    },
+
+    fixNumber: function (num) {
+        return num < 10 ? '0' + num : num;
     }
 };

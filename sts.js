@@ -79,9 +79,18 @@ http.createServer(function (request, response) {
     var extname = path.extname(pathname).toLowerCase();
     var filepath = path.join(WEBROOT, pathname);
     var relative = path.relative(WEBROOT, filepath);
+    var d = new Date();
 
+    lib.log('TIME <=', d.getFullYear() + '-' +
+        lib.fixNumber(d.getMonth() + 1) + '-' +
+        lib.fixNumber(d.getDate()) + ' ' +
+        lib.fixNumber(d.getHours()) + ':' +
+        lib.fixNumber(d.getMinutes()) + ':' +
+        lib.fixNumber(d.getSeconds()));
+    lib.log('UA <=', request.headers['user-agent']);
     lib.log(request.method + ' <=', url);
     lib.log('PARSE =>', filepath);
+    console.log();
 
     // 只接受 GET 和 POST 请求
     if (request.method !== 'GET' && request.method !== 'POST') {

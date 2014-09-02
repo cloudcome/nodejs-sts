@@ -20,6 +20,9 @@ sts 18080 your server name
 
 
 # VERSION
+## v0.1.5
+* 完善了LOG记录，目前有UA、TIME、URL、METHOD、PARSE信息
+
 ## v0.1.4
 * 更新了404、500的描述
 * 修复了`点文件夹`的访问BUG
