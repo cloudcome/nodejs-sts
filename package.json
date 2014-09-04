@@ -1,6 +1,6 @@
 {
     "name": "sts",
-    "version": "0.1.5",
+    "version": "0.1.6",
     "description": "STATIC TRUSTED SERVER => sts",
     "main": "sts.js",
     "keywords": [
@@ -22,6 +22,7 @@
     "bin": {
         "sts": "./bin/sts.js"
     },
+    "preferGlobal": true,
     "license": "MIT",
     "readmeFilename": "readme.md",
     "dependencies": {
