@@ -1,6 +1,6 @@
 {
     "name": "sts",
-    "version": "0.1.6",
+    "version": "0.1.8",
     "description": "STATIC TRUSTED SERVER => sts",
     "main": "sts.js",
     "keywords": [
@@ -21,6 +21,9 @@
     },
     "bin": {
         "sts": "./bin/sts.js"
+    },
+    "engines": {
+        "node": ">=0.10.0"
     },
     "preferGlobal": true,
     "license": "MIT",
