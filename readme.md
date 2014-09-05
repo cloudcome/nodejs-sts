@@ -20,6 +20,9 @@ sts 18080 your server name
 
 
 # VERSION
+## v 0.1.9
+* 修复了linux下全局命令不存在的BUG
+
 ## v0.1.5
 * 完善了LOG记录，目前有UA、TIME、URL、METHOD、PARSE信息
 
