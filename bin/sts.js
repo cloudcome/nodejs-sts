@@ -1,3 +1,3 @@
 #!/usr/bin/env node
 
-require('../sts.js');
+require('../cli.js');

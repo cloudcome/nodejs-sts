@@ -20,7 +20,10 @@ sts 18080 your server name
 
 
 # VERSION
-## v 0.1.9
+## v0.1.10
+* 增加了本地静态服务器
+
+## v0.1.9
 * 修复了linux下全局命令不存在的BUG
 
 ## v0.1.5
