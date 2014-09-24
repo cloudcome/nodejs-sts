@@ -1,6 +1,6 @@
 {
     "name": "sts",
-    "version": "0.1.11",
+    "version": "0.1.12",
     "description": "STATIC TRUSTED SERVER => sts",
     "main": "sts.js",
     "keywords": [

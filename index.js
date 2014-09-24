@@ -30,6 +30,7 @@ markdown.setOptions({
 
 
 module.exports = function (webroot, port, callback) {
+    port = port * 1;
     http.createServer(function (request, response) {
         var url = request.url;
         var parse = url2.parse(url);
@@ -49,7 +50,7 @@ module.exports = function (webroot, port, callback) {
             lib.fixNumber(d.getMinutes()) + ':' +
             lib.fixNumber(d.getSeconds()));
         lib.log('UA <=', request.headers['user-agent']);
-        lib.log(request.method + ' <=', url);
+        lib.log(request.method + ' <=', 'http://localhost' + (port === 80 ? '' : ':' + port) + url);
         lib.log('PARSE =>', filepath);
         console.log();
 

@@ -8,6 +8,17 @@ npm i sts -g
 ```
 
 # USAGE
+
+## local
+```
+var sts = require('sts');
+// webroot: 绝对路径
+// port: 端口号
+// callback: 回调
+sts(webroot, port, callback);
+```
+
+## global
 ```
 sts -v 
 cd your directory
@@ -20,7 +31,7 @@ sts 18080 your server name
 
 
 # VERSION
-## v0.1.10
+## v0.1.12
 * 增加了本地静态服务器
 
 ## v0.1.9
