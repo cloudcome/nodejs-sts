@@ -15,8 +15,10 @@ var lib = require('./lib.js');
 var markdown = require('marked');
 var highlight = require('highlight.js');
 var template = fs.readFileSync(path.join(__dirname, './static/tpl.html'), 'utf8');
-var style = fs.readFileSync(path.join(__dirname, './static/style.css'), 'utf8').replace(/\s+/g, ' ')
-    .replace(/[\n\r\t]/g, '');
+var style = fs.readFileSync(path.join(__dirname, './static/style.css'), 'utf8')
+    .replace(/\s+/g, ' ')
+    .replace(/[\n\r\t]/g, '')
+    .replace(/\/\*[\s\S]*?\*\//,'');
 template = template.replace(/{{style}}/, '<style>' + style + '</style>');
 var regBody = /{{body}}/;
 var regTitle = /{{title}}/;

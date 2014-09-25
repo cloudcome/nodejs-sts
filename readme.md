@@ -25,14 +25,12 @@ cd your directory
 sts 18080 your server name
 ```
 
-* HTTP静态服务器将运行在当前目录。
-* 端口（必须）: `18080`
-* 名称（可选，防止在cmd窗口运行多个静态服务器，不知道哪个是哪个）: `your server name`
-
 
 # VERSION
-## v0.1.12
+## v0.1.13
 * 增加了本地静态服务器
+* 调整了`markdown`的样式
+* 调整了日志记录
 
 ## v0.1.9
 * 修复了linux下全局命令不存在的BUG
