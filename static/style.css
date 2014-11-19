@@ -4,12 +4,24 @@
  * @author ydr.me
  * 2014-08-25 19:08
  */
+html {
+    font-size: 62.5%;
+}
+
+body {
+    font-size: 1.6rem;
+}
+
+html, input, button, textarea {
+    font: 14px / 1.5 "Segoe UI", "Lucida Grande", Helvetica, Arial, "Microsoft JhengHei", "Microsoft YaHei", STXihei, FreeSans, Arimo, "Droid Sans", "wenquanyi micro hei", "Hiragino Sans GB", "Hiragino Sans GB W3", sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
 
 body {
     margin: 0;
     padding: 0;
     background: #f5f5f5;
-    font: 14px/1.6 'Microsoft YaHei UI', 'microsoft yahei', Helvetica, arial, freesans, clean, sans-serif;
     color: #333;
     word-wrap: break-word;
 }
@@ -84,8 +96,8 @@ p{
 img{
     vertical-align: middle;
     border: 0;
-    max-width: 900px;
-    width: auto;
+    max-width: 100%;
+    height: auto;
 }
 
 code {
@@ -93,7 +105,7 @@ code {
     background: #FFF2F2;
     margin: 0 2px;
     padding: 2px 6px;
-    border: 1px solid #ECBCBC;
+    border: 1px solid #FFD3D3;
     font-style: italic;
     color: #BD2020;
     border-radius: 2px;
