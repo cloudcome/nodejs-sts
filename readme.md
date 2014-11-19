@@ -27,7 +27,7 @@ sts 18080 your server name
 
 
 # VERSION
-## v0.1.14
+## v0.1.15
 * 增加了本地静态服务器
 * 调整了`markdown`的样式
 * 调整了日志记录
