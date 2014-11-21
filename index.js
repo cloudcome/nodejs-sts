@@ -6,24 +6,22 @@
 
 'use strict';
 
-
-var url2 = require('url');
+var ydrUtil = require('ydr-util');
+var YdrTemplate = require('ydr-template');
+var URL = require('url');
 var http = require('http');
 var path = require('path');
 var fs = require('fs');
-var lib = require('./lib.js');
 var markdown = require('marked');
 var highlight = require('highlight.js');
 var template = fs.readFileSync(path.join(__dirname, './static/tpl.html'), 'utf8');
-var style = fs.readFileSync(path.join(__dirname, './static/style.css'), 'utf8')
-    .replace(/\s+/g, ' ')
-    .replace(/[\n\r\t]/g, '')
-    .replace(/\/\*[\s\S]*?\*\//,'');
-template = template.replace(/{{style}}/, '<style>' + style + '</style>');
-var regBody = /{{body}}/;
-var regTitle = /{{title}}/;
-var regParentPath = /^\.\.[\/\\]/;
+var tpl;
+var style = fs.readFileSync(path.join(__dirname, './static/style.css'), 'utf8');
+var REG_PARENT_PATH = /^\.\.[\/\\]/;
 var DEFAULTFILE = 'index.html';
+
+template = template.replace(/{{style}}/, '<style>' + style + '</style>');
+tpl = new YdrTemplate(template);
 markdown.setOptions({
     highlight: function (code) {
         return highlight.highlightAuto(code).value;
@@ -31,88 +29,136 @@ markdown.setOptions({
 });
 
 
+/**
+ * 启动一个 HTTP 服务器
+ * @param webroot {String} 网站根目录
+ * @param [port] {String} 端口，默认80
+ * @param callback 启动后回调
+ */
 module.exports = function (webroot, port, callback) {
-    port = port * 1;
-    http.createServer(function (request, response) {
-        var url = request.url;
-        var parse = url2.parse(url);
+    if (ydrUtil.typeis(port) === 'function') {
+        callback = port;
+        port = 80;
+    }
+
+    port = ydrUtil.dato.parseInt(port, 80);
+
+    var app = http.createServer(function (req, res) {
+        var url = req.url;
+        var parse = URL.parse(url);
         var pathname = parse.pathname;
         var search = parse.search || '';
         var lastChar = pathname.slice(-1);
         var basename = path.basename(pathname);
         var extname = path.extname(pathname).toLowerCase();
-        var filepath = path.join(webroot, pathname);
-        var relative = path.relative(webroot, filepath);
-        var d = new Date();
+        var reqFile = path.join(webroot, pathname);
+        var relative = path.relative(webroot, reqFile);
 
-        lib.log('TIME <=', d.getFullYear() + '-' +
-            lib.fixNumber(d.getMonth() + 1) + '-' +
-            lib.fixNumber(d.getDate()) + ' ' +
-            lib.fixNumber(d.getHours()) + ':' +
-            lib.fixNumber(d.getMinutes()) + ':' +
-            lib.fixNumber(d.getSeconds()));
-        lib.log('UA <=', request.headers['user-agent']);
-        lib.log(request.method + ' <=', 'http://localhost' + (port === 80 ? '' : ':' + port) + url);
-        lib.log('PARSE =>', filepath);
-        console.log();
+        res.setHeader('X-Powered-By', 'sts');
 
         // 只接受 GET 和 POST 请求
-        if (request.method !== 'GET' && request.method !== 'POST') {
-            return lib['403'](response, 'Forbidden');
+        if (req.method !== 'GET' && req.method !== 'POST') {
+            return _errRes(403, req, res);
         }
 
         // 开头为 ..\ 或者 ../，说明是想访问父级目录，绝对禁止
-        if (regParentPath.test(relative)) {
-            return lib['403'](response, 'Forbidden');
+        if (REG_PARENT_PATH.test(relative)) {
+            return _errRes(403, req, res);
         }
 
-        fs.lstat(filepath, function (err, stats) {
+        fs.lstat(reqFile, function (err, stats) {
             if (err) {
-                return lib['404'](response);
+                return _errRes(404, req, res, err);
             }
 
             if (stats.isDirectory() || stats.isSymbolicLink()) {
-
                 if (lastChar !== '/') {
-                    return lib['302'](response, pathname + '/' + search);
+                    return _errRes(404, req, res, pathname + '/' + search);
                 }
 
-                filepath = path.join(filepath, DEFAULTFILE);
+                reqFile = path.join(reqFile, DEFAULTFILE);
 
-                fs.exists(filepath, function (b) {
+                fs.exists(reqFile, function (b) {
                     if (!b) {
-                        return lib['404'](response);
+                        return _errRes(404, req, res);
                     }
 
-                    response.writeHead(200, {
-                        'content-type': lib.getMime('.html') + '; charset=utf-8'
-                    });
-                    fs.createReadStream(filepath).pipe(response);
+                    _fileRes(reqFile, req, res);
                 });
             } else if (stats.isFile()) {
-                response.writeHead(200, {
-                    'content-type': lib.getMime(extname) + '; charset=utf-8'
-                });
                 if (['.md', '.markdown'].indexOf(extname) > -1) {
-                    var text = fs.readFileSync(filepath, 'utf8');
-                    markdown(text, function (err, html) {
+                    var text = fs.readFileSync(reqFile, 'utf8');
+
+                    markdown(text, function (err, body) {
                         if (err) {
-                            return lib['500'](response, err.message);
+                            return _errRes(500, req, res, err);
                         }
 
-                        response.end(template.replace(regBody, html).replace(regTitle, basename));
+                        var html = tpl.render({
+                            title: basename,
+                            body: body
+                        });
+
+                        _fileRes(reqFile, req, res, '.html', html);
                     });
                 } else {
-                    fs.createReadStream(filepath).pipe(response);
+                    _fileRes(reqFile, req, res);
                 }
             } else {
-                lib['500'](response);
+                _errRes(500, req, res);
             }
         });
-    }).listen(port, callback).on('error', callback);
+    });
+
+    app.listen(port, callback);
+    app.on('error', callback);
 };
 
 
+/**
+ * 错误响应
+ * @param code
+ * @param res
+ * @param [err]
+ * @private
+ */
+function _errRes(code, req, res, err) {
+    var msg = ydrUtil.httpStatus.get(code);
+
+    res.writeHead(code, {
+        'content-type': ydrUtil.mime.get('.html') + '; charset=utf-8'
+    });
+
+    if (code === 301 || code === 302) {
+        res.setHeader('location', err);
+    } else {
+        res.write(tpl.render({
+            title: msg,
+            body: err ? err.message : msg
+        }));
+    }
+
+    res.end();
+}
 
 
+/**
+ * 文件响应
+ * @param file
+ * @param res
+ * @private
+ */
+function _fileRes(file, req, res, extname, html) {
+    var etag = ydrUtil.crypto.etag(file);
 
+    extname = extname || path.extname(file);
+    res.setHeader('Etag', etag);
+    res.setHeader('content-type', ydrUtil.mime.get(extname) + '; charset=utf-8');
+    res.writeHead(req.headers['if-none-match'] === etag ? 304 : 200);
+
+    if (html) {
+        res.end(html);
+    } else {
+        fs.createReadStream(file).pipe(res);
+    }
+}

@@ -27,6 +27,9 @@ sts 18080 your server name
 
 
 # VERSION
+## v0.2.0
+* 增加了缓存304策略
+
 ## v0.1.15
 * 增加了本地静态服务器
 * 调整了`markdown`的样式
