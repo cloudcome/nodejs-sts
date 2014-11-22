@@ -27,7 +27,7 @@ sts 18080 your server name
 
 
 # VERSION
-## v0.2.0
+## v0.2.1
 * 增加了缓存304策略
 
 ## v0.1.15
