@@ -1,6 +1,6 @@
 {
   "name": "sts",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "description": "STATIC TRUSTED SERVER => sts",
   "main": "index.js",
   "keywords": [
@@ -22,7 +22,7 @@
     "url": "https://github.com/cloudcome/nodejs-sts"
   },
   "bin": {
-    "sts": "./bin/sts.js"
+    "sts": "./bin/sts"
   },
   "engines": {
     "node": ">=0.10.0"
