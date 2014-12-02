@@ -51,7 +51,7 @@ h1 {
     margin: 50px 0 20px;
 }
 
-h1:first-child{
+h1:first-child {
     margin-top: 20px;
 }
 
@@ -76,7 +76,6 @@ h4, h5, h6 {
 }
 
 ul, ol {
-    line-height: 30px;
     margin: 20px 0;
     padding: 0 0 0 10px;
     list-style-position: inside;
@@ -85,15 +84,15 @@ ul, ol {
 ul ol,
 ul ul,
 ol ul,
-ul ol{
-    margin:0 0 0 40px;
+ul ol {
+    margin: 0 0 0 40px;
 }
 
-p{
+p {
     margin-bottom: 10px;
 }
 
-img{
+img {
     vertical-align: middle;
     border: 0;
     max-width: 100%;
@@ -102,13 +101,12 @@ img{
 
 code {
     font-family: Monaco, Consolas, "Lucida Console", monospace;
-    background: #FFF2F2;
+    background: #FFF3F3;
     margin: 0 2px;
-    padding: 2px 6px;
-    border: 1px solid #FFD3D3;
+    padding: 0px 6px;
     font-style: italic;
-    color: #BD2020;
-    border-radius: 2px;
+    color: #B52B2B;
+    border-radius: 4px;
 }
 
 pre {
