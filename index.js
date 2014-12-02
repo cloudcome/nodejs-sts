@@ -12,7 +12,7 @@ var URL = require('url');
 var http = require('http');
 var path = require('path');
 var fs = require('fs');
-var markdown = require('marked');
+var marked = require('marked');
 var highlight = require('highlight.js');
 var template = fs.readFileSync(path.join(__dirname, './static/tpl.html'), 'utf8');
 var tpl;
@@ -22,10 +22,11 @@ var DEFAULTFILE = 'index.html';
 
 template = template.replace(/{{style}}/, '<style>' + style + '</style>');
 tpl = new YdrTemplate(template);
-markdown.setOptions({
+marked.setOptions({
     highlight: function (code) {
         return highlight.highlightAuto(code).value;
-    }
+    },
+    sanitize: true
 });
 
 
@@ -89,7 +90,7 @@ module.exports = function (webroot, port, callback) {
                 if (['.md', '.markdown'].indexOf(extname) > -1) {
                     var text = fs.readFileSync(reqFile, 'utf8');
 
-                    markdown(text, function (err, body) {
+                    marked(text, function (err, body) {
                         if (err) {
                             return _errRes(500, req, res, err);
                         }
@@ -149,12 +150,13 @@ function _errRes(code, req, res, err) {
  * @private
  */
 function _fileRes(file, req, res, extname, html) {
-    var etag = ydrUtil.crypto.etag(file);
+    var lastModified = ydrUtil.crypto.lastModified(file);
+    var headerModified = req.headers['if-modified-since'];
 
     extname = extname || path.extname(file);
-    res.setHeader('Etag', etag);
-    res.setHeader('content-type', ydrUtil.mime.get(extname) + '; charset=utf-8');
-    res.writeHead(req.headers['if-none-match'] === etag ? 304 : 200);
+    res.setHeader('Last-Modified', lastModified);
+    res.setHeader('Content-Type', ydrUtil.mime.get(extname) + '; charset=utf-8');
+    res.writeHead(headerModified === lastModified ? 304 : 200);
 
     if (html) {
         res.end(html);
