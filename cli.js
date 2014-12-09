@@ -8,6 +8,7 @@
 'use strict';
 
 var path = require('path');
+var open = require('open');
 var pkg = require('./package.json');
 
 
@@ -52,7 +53,7 @@ var NAME = args.join(' ') || path.basename(WEBROOT);
 var server = require('./index.js');
 
 server(WEBROOT, PORT, function (err) {
-    if(err){
+    if (err) {
         console.log('############################################################');
         console.log('STATIC TRUSTED SERVER => sts');
         console.log(NAME + ' ERROR:');
@@ -60,12 +61,15 @@ server(WEBROOT, PORT, function (err) {
         console.log('############################################################');
         console.log();
         process.exit(-1);
-    }else{
+    } else {
         console.log('############################################################');
         console.log('STATIC TRUSTED SERVER => sts');
         console.log(NAME + ' URL: http://localhost:' + PORT);
         console.log('WEBROOT: ' + WEBROOT);
         console.log('############################################################');
         console.log();
+
+        // open url in default browser
+        open('http://localhost:' + PORT);
     }
 });
