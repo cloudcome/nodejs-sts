@@ -1,6 +1,6 @@
 {
   "name": "sts",
-  "version": "0.2.5",
+  "version": "0.2.6",
   "description": "STATIC TRUSTED SERVER => sts",
   "main": "index.js",
   "keywords": [
@@ -32,7 +32,8 @@
   "dependencies": {
     "highlight.js": "^8.2.0",
     "marked": "^0.3.2",
-    "ydr-template": "*",
-    "ydr-util": "*"
+    "open": "0.0.5",
+    "ydr-template": "^1.1.2",
+    "ydr-util": "^1.10.14"
   }
 }
