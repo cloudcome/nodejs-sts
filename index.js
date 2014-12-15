@@ -19,6 +19,7 @@ var tpl;
 var style = fs.readFileSync(path.join(__dirname, './static/style.css'), 'utf8');
 var REG_PARENT_PATH = /^\.\.[\/\\]/;
 var DEFAULTFILE = 'index.html';
+var REG_STREAM = /^(video|audio)\//;
 
 template = template.replace(/{{style}}/, '<style>' + style + '</style>');
 tpl = new YdrTemplate(template);
@@ -152,13 +153,41 @@ function _errRes(code, req, res, err) {
 function _fileRes(file, req, res, extname, html) {
     var lastModified = ydrUtil.crypto.lastModified(file);
     var headerModified = req.headers['if-modified-since'];
+    var range;
+    var positions;
+    var start;
 
     extname = extname || path.extname(file);
+    var contentType = ydrUtil.mime.get(extname);
     res.setHeader('Last-Modified', lastModified);
-    res.setHeader('Content-Type', ydrUtil.mime.get(extname) + '; charset=utf-8');
-    res.writeHead(headerModified === lastModified ? 304 : 200);
+    res.setHeader('Content-Type', contentType + '; charset=utf-8');
+    res.statusCode = headerModified === lastModified ? 304 : 200;
 
-    if (html) {
+    // stream
+    if (req.headers.range) {
+        range = req.headers.range;
+        positions = range.replace(/bytes=/, '').split('-');
+        start = ydrUtil.dato.parseInt(positions[0], 10);
+
+        fs.stat(file, function (err, stats) {
+            var total = stats.size;
+            var end = positions[1] ? ydrUtil.dato.parseInt(positions[1], 10) : total - 1;
+            var chunksize = (end - start) + 1;
+
+            res.statusCode = 206;
+            res.setHeader('content-range', 'bytes ' + start + "-" + end + "/" + total);
+            res.setHeader('accept-ranges', 'bytes');
+            res.setHeader('content-length', chunksize);
+            res.setHeader('content-type', contentType);
+
+            var stream = fs.createReadStream(file, {start: start, end: end})
+                .on('open', function () {
+                    stream.pipe(res);
+                }).on('error', function (err) {
+                    res.end(err);
+                });
+        });
+    }else if(html){
         res.end(html);
     } else {
         fs.createReadStream(file).pipe(res);
