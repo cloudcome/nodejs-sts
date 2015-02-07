@@ -27,6 +27,10 @@ sts 18080 your server name
 
 
 # VERSION
+## v1.0.0
+- 修正了 URL 中包含中文读取路径的 BUG
+- 修正了其他 BUG
+
 ## v0.2.8
 - 支持文件流读取
 - 启动时自动打开浏览器
