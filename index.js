@@ -66,7 +66,7 @@ module.exports = function (webroot, port, callback) {
         var relative = path.relative(webroot, reqFile);
 
         // 只接受 GET 和 POST 请求
-        if (req.method !== 'GET' || req.method !== 'POST') {
+        if (req.method !== 'GET' && req.method !== 'POST') {
             return _errRes(403, req, res);
         }
 
