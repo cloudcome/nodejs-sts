@@ -19,9 +19,9 @@ var tpl;
 var style = fs.readFileSync(path.join(__dirname, './static/style.css'), 'utf8');
 var REG_PARENT_PATH = /^\.\.[\/\\]/;
 var DEFAULTFILE = 'index.html';
-var REG_STREAM = /^(video|audio)\//;
+//var REG_STREAM = /^(video|audio)\//;
 
-template = template.replace(/{{style}}/, '<style>' + style + '</style>');
+template = template.replace(/\{\{style}}/, '<style>' + style + '</style>');
 tpl = new YdrTemplate(template);
 marked.setOptions({
     highlight: function (code) {
@@ -46,7 +46,16 @@ module.exports = function (webroot, port, callback) {
     port = ydrUtil.dato.parseInt(port, 80);
 
     var app = http.createServer(function (req, res) {
+        res.setHeader('X-Powered-By', 'sts');
+        
         var url = req.url;
+
+        try{
+            url = decodeURI(url);
+        }catch (err){
+            return _errRes(500, req, res);
+        }
+        
         var parse = URL.parse(url);
         var pathname = parse.pathname;
         var search = parse.search || '';
@@ -56,10 +65,8 @@ module.exports = function (webroot, port, callback) {
         var reqFile = path.join(webroot, pathname);
         var relative = path.relative(webroot, reqFile);
 
-        res.setHeader('X-Powered-By', 'sts');
-
         // 只接受 GET 和 POST 请求
-        if (req.method !== 'GET' && req.method !== 'POST') {
+        if (req.method !== 'GET' || req.method !== 'POST') {
             return _errRes(403, req, res);
         }
 
@@ -88,24 +95,34 @@ module.exports = function (webroot, port, callback) {
                     _fileRes(reqFile, req, res);
                 });
             } else if (stats.isFile()) {
-                if (['.md', '.markdown'].indexOf(extname) > -1) {
-                    var text = fs.readFileSync(reqFile, 'utf8');
+                fs.exists(reqFile, function (b) {
+                    if (!b) {
+                        return _errRes(404, req, res);
+                    }
 
-                    marked(text, function (err, body) {
+                    fs.readFile(reqFile, 'utf8', function (err, text) {
                         if (err) {
-                            return _errRes(500, req, res, err);
+                            return _errRes(500, req, res);
                         }
 
-                        var html = tpl.render({
-                            title: basename,
-                            body: body
-                        });
+                        if (['.md', '.markdown'].indexOf(extname) > -1) {
+                            marked(text, function (err, body) {
+                                if (err) {
+                                    return _errRes(500, req, res, err);
+                                }
 
-                        _fileRes(reqFile, req, res, '.html', html);
+                                var html = tpl.render({
+                                    title: basename,
+                                    body: body
+                                });
+
+                                _fileRes(reqFile, req, res, '.html', html);
+                            });
+                        } else {
+                            _fileRes(reqFile, req, res);
+                        }
                     });
-                } else {
-                    _fileRes(reqFile, req, res);
-                }
+                });
             } else {
                 _errRes(500, req, res);
             }
@@ -187,7 +204,7 @@ function _fileRes(file, req, res, extname, html) {
                     res.end(err);
                 });
         });
-    }else if(html){
+    } else if (html) {
         res.end(html);
     } else {
         fs.createReadStream(file).pipe(res);
