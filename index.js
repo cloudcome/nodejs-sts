@@ -178,6 +178,8 @@ function _fileRes(file, req, res, extname, html) {
     var contentType = ydrUtil.mime.get(extname);
     res.setHeader('Last-Modified', lastModified);
     res.setHeader('Content-Type', contentType + '; charset=utf-8');
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Access-Control-Allow-Methods', '*');
     res.statusCode = headerModified === lastModified ? 304 : 200;
 
     // stream
