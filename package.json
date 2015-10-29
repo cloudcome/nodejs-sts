@@ -1,6 +1,6 @@
 {
   "name": "sts",
-  "version": "1.0.2",
+  "version": "2.0.0",
   "description": "STATIC TRUSTED SERVER => sts",
   "main": "index.js",
   "keywords": [
@@ -31,8 +31,8 @@
   "readmeFilename": "readme.md",
   "dependencies": {
     "highlight.js": "^8.2.0",
-    "marked": "^0.3.2",
+    "marked": "^0.3.5",
     "open": "0.0.5",
-    "ydr-utils": "^29.0.0"
+    "ydr-utils": "^29.2.0"
   }
 }

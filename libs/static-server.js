@@ -1,28 +1,41 @@
-/*!
- * index
+/**
+ * static server
  * @author ydr.me
  * 2014-09-21 11:05
  */
 
 'use strict';
 
-var ydrUtil = require('ydr-util');
-var YdrTemplate = require('ydr-template');
-var URL = require('url');
+var dato = require('ydr-utils').dato;
+var mime = require('ydr-utils').mime;
+var number = require('ydr-utils').number;
+var httpStatus = require('ydr-utils').httpStatus;
+var typeis = require('ydr-utils').typeis;
+var encryption = require('ydr-utils').encryption;
+var Template = require('ydr-utils').Template;
+var allocation = require('ydr-utils').allocation;
+var urlHelper = require('url');
 var http = require('http');
 var path = require('path');
 var fs = require('fs');
 var marked = require('marked');
 var highlight = require('highlight.js');
-var template = fs.readFileSync(path.join(__dirname, './static/tpl.html'), 'utf8');
+
+var pkg = require('../package.json');
+
+var template = fs.readFileSync(path.join(__dirname, '../static/tpl.html'), 'utf8');
 var tpl;
-var style = fs.readFileSync(path.join(__dirname, './static/style.css'), 'utf8');
+var style = fs.readFileSync(path.join(__dirname, '../static/style.css'), 'utf8');
 var REG_PARENT_PATH = /^\.\.[\/\\]/;
 var DEFAULTFILE = 'index.html';
 //var REG_STREAM = /^(video|audio)\//;
+var REG_NUMBER = /^[1-9]\d*$/;
+var noop = function () {
+    // ignore
+};
 
 template = template.replace(/\{\{style}}/, '<style>' + style + '</style>');
-tpl = new YdrTemplate(template);
+tpl = new Template(template);
 marked.setOptions({
     highlight: function (code) {
         return highlight.highlightAuto(code).value;
@@ -35,28 +48,41 @@ marked.setOptions({
  * 启动一个 HTTP 服务器
  * @param webroot {String} 网站根目录
  * @param [port] {String} 端口，默认80
- * @param callback 启动后回调
+ * @param [callback] 启动后回调
  */
 module.exports = function (webroot, port, callback) {
-    if (ydrUtil.typeis(port) === 'function') {
-        callback = port;
-        port = 80;
+    var args = allocation.args(arguments);
+
+    switch (args.length){
+        case 2:
+            if(typeis.function(args[1])){
+                callback = args[1];
+                port = 0;
+            }else{
+                callback = noop;
+            }
+            break;
+
+        case 1:
+            port = 0;
+            callback = noop;
+            break;
     }
 
-    port = ydrUtil.dato.parseInt(port, 80);
+    port = number.parseInt(port, 0);
 
     var app = http.createServer(function (req, res) {
-        res.setHeader('X-Powered-By', 'sts');
-        
+        res.setHeader('x-powered-by', pkg.name + '@' + pkg.version);
+
         var url = req.url;
 
-        try{
+        try {
             url = decodeURI(url);
-        }catch (err){
+        } catch (err) {
             return _errRes(500, req, res);
         }
-        
-        var parse = URL.parse(url);
+
+        var parse = urlHelper.parse(url);
         var pathname = parse.pathname;
         var search = parse.search || '';
         var lastChar = pathname.slice(-1);
@@ -137,15 +163,16 @@ module.exports = function (webroot, port, callback) {
 /**
  * 错误响应
  * @param code
+ * @param req
  * @param res
  * @param [err]
  * @private
  */
 function _errRes(code, req, res, err) {
-    var msg = ydrUtil.httpStatus.get(code);
+    var msg = httpStatus.get(code);
 
     res.writeHead(code, {
-        'content-type': ydrUtil.mime.get('.html') + '; charset=utf-8'
+        'content-type': mime.get('.html') + '; charset=utf-8'
     });
 
     if (code === 301 || code === 302) {
@@ -164,18 +191,21 @@ function _errRes(code, req, res, err) {
 /**
  * 文件响应
  * @param file
+ * @param req
  * @param res
+ * @param extname
+ * @param html
  * @private
  */
 function _fileRes(file, req, res, extname, html) {
-    var lastModified = ydrUtil.crypto.lastModified(file);
+    var lastModified = encryption.lastModified(file);
     var headerModified = req.headers['if-modified-since'];
     var range;
     var positions;
     var start;
 
     extname = extname || path.extname(file);
-    var contentType = ydrUtil.mime.get(extname);
+    var contentType = mime.get(extname);
     res.setHeader('Last-Modified', lastModified);
     res.setHeader('Content-Type', contentType + '; charset=utf-8');
     res.setHeader('Access-Control-Allow-Origin', '*');
@@ -186,11 +216,11 @@ function _fileRes(file, req, res, extname, html) {
     if (req.headers.range) {
         range = req.headers.range;
         positions = range.replace(/bytes=/, '').split('-');
-        start = ydrUtil.dato.parseInt(positions[0], 10);
+        start = number.parseInt(positions[0], 10);
 
         fs.stat(file, function (err, stats) {
             var total = stats.size;
-            var end = positions[1] ? ydrUtil.dato.parseInt(positions[1], 10) : total - 1;
+            var end = positions[1] ? number.parseInt(positions[1], 10) : total - 1;
             var chunksize = (end - start) + 1;
 
             res.statusCode = 206;

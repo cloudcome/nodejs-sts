@@ -1,3 +1,74 @@
 #!/usr/bin/env node
 
-require('../index.js')(process.cwd());
+
+'use strict';
+
+var command = require('ydr-utils').command;
+var debug = require('ydr-utils').debug;
+var dato = require('ydr-utils').dato;
+var npm = require('ydr-utils').npm;
+var openBrowser = require('open');
+
+var pkg = require('../package.json');
+var staticServer = require('../libs/static-server.js');
+var getScopeIP = require('../libs/get-scope-ip.js');
+
+var scopeIP = getScopeIP();
+
+// command config
+command.alias({
+    v: 'version',
+    V: 'version',
+    h: 'help',
+    H: 'help'
+});
+
+
+/**
+ * 命令入口
+ * @param webroot
+ */
+command.if('version', function () {
+    debug.success('local version', pkg.version);
+    npm.getLatestVersion(pkg.name, function (err, version) {
+        if (err) {
+            return debug.error('error', err.message);
+        }
+
+        debug.success('online version', version);
+    });
+});
+
+command.if('start', function (args) {
+    staticServer(this.cwd, args.port, function (err) {
+        if (err) {
+            debug.error('sts', err.message);
+            return process.exit(1);
+        }
+
+        var port = this.address().port;
+
+        debug.success('sts', 'A static server is running at');
+        debug.success('sts', 'http://' + scopeIP + ':' + port);
+    });
+});
+
+command.if('help', function () {
+    debug.success('sts', 'use `sts [port]` to start a static server in this dirname');
+});
+
+command.else(function (cmd, args) {
+    if (args.help) {
+        return command.exec('help');
+    }
+
+    if (args.version) {
+        return command.exec('version');
+    }
+
+    command.exec('start', {
+        port: cmd
+    });
+});
+
+command.parse(process.argv);
