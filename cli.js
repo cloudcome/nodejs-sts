@@ -7,9 +7,38 @@
 
 'use strict';
 
+var dato = require('ydr-utils').dato;
 var path = require('path');
 var open = require('open');
+var os = require('os');
+
 var pkg = require('./package.json');
+
+var scopeIP = null;
+var REG_SCOPE = /^192\.168\./;
+
+dato.each(os.networkInterfaces(), function (networkType, networkList) {
+    //{ address: 'fe80::1',
+    //netmask: 'ffff:ffff:ffff:ffff::',
+    //family: 'IPv6',
+    //mac: '00:00:00:00:00:00',
+    //scopeid: 1,
+    //internal: true }
+    dato.each(networkList, function (index, networkMeta) {
+        if (networkMeta.family === 'IPv4' && REG_SCOPE.test(networkMeta.address)) {
+            scopeIP = networkMeta.address;
+            return false;
+        }
+    });
+
+    if (scopeIP) {
+        return false;
+    }
+});
+
+scopeIP = scopeIP || 'localhost';
+
+return console.log(scopeIP);
 
 
 ///////////////////////////////////////////////////////////////////
@@ -70,6 +99,6 @@ server(WEBROOT, PORT, function (err) {
         console.log();
 
         // open url in default browser
-        open('http://localhost:' + PORT);
+        open('http://' + scopeIP + ':' + PORT);
     }
 });
