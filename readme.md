@@ -20,9 +20,10 @@ sts(webroot, port, callback);
 
 ## global
 ```
-sts -v 
+sts version 输出版本号 
+sts help 输出帮助信息
 cd your directory
-sts 18080 your server name
+sts [port] 启动静态服务器
 ```
 
 

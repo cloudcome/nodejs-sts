@@ -32,10 +32,13 @@ command.if('version', function () {
     debug.success('local version', pkg.version);
     npm.getLatestVersion(pkg.name, function (err, version) {
         if (err) {
-            return debug.error('error', err.message);
+            debug.error('error', err.message);
+            console.log();
+            return;
         }
 
         debug.success('online version', version);
+        console.log();
     });
 });
 
@@ -51,6 +54,7 @@ command.if('start', function (args) {
 
         debug.success('sts', 'A static server is running.');
         debug.success('open', url);
+        console.log();
         openBrowser(url);
     });
 });
@@ -59,6 +63,7 @@ command.if('help', function () {
     debug.warn('sts [port]', 'start a static server in current dirname', true);
     debug.warn('sts help', 'get help info', true);
     debug.warn('sts version', 'get version info', true);
+    console.log();
 });
 
 command.else(function (cmd, args) {
