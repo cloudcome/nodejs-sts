@@ -30,7 +30,7 @@
   "license": "MIT",
   "readmeFilename": "readme.md",
   "dependencies": {
-    "highlight.js": "^8.2.0",
+    "highlight.js": "^8.9.1",
     "marked": "^0.3.5",
     "open": "0.0.5",
     "ydr-utils": "^29.3.0"
