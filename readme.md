@@ -4,7 +4,7 @@
 
 # INSTALL
 ```
-npm i sts -g
+npm install sts -g
 ```
 
 # USAGE
@@ -27,40 +27,16 @@ sts 18080 your server name
 
 
 # VERSION
-## v1.0.0
-- 修正了 URL 中包含中文读取路径的 BUG
-- 修正了其他 BUG
+## v2.0.0
+- 全新交互方式，支持随机端口启动
 
-## v0.2.8
+## v1.x.x
 - 支持文件流读取
 - 启动时自动打开浏览器
 - 增加了缓存304策略
-
-## v0.1.15
 - 增加了本地静态服务器
-- 调整了`markdown`的样式
-- 调整了日志记录
-- 调整了部分样式
-
-## v0.1.9
-- 修复了linux下全局命令不存在的BUG
-
-## v0.1.5
-- 完善了LOG记录，目前有UA、TIME、URL、METHOD、PARSE信息
-
-## v0.1.4
 - 更新了404、500的描述
 - 修复了`点文件夹`的访问BUG
 - 更新了markdown文件的样式
-- 增加LOG记录
-
-## v0.1.3
-- **S**TATIC **T**RUSTED **S**ERVER => sts
-
-## v0.0.19
 - 增加了对markdown文件的支持，支持`.md`、`.mkd`、`.markdown`3种文件后缀
 - 增加输出版本号
-- 修复了部分BUG
-
-## v0.0.1
-- 支持了全局安装以及路径适配

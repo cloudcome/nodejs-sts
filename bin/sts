@@ -47,14 +47,18 @@ command.if('start', function (args) {
         }
 
         var port = this.address().port;
+        var url = 'http://' + scopeIP + ':' + port;
 
-        debug.success('sts', 'A static server is running at');
-        debug.success('sts', 'http://' + scopeIP + ':' + port);
+        debug.success('sts', 'A static server is running.');
+        debug.success('open', url);
+        openBrowser(url);
     });
 });
 
 command.if('help', function () {
-    debug.success('sts', 'use `sts [port]` to start a static server in this dirname');
+    debug.warn('sts [port]', 'start a static server in this dirname', true);
+    debug.warn('sts help', 'get help info', true);
+    debug.warn('sts version', 'get version info', true);
 });
 
 command.else(function (cmd, args) {
