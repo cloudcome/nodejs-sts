@@ -56,7 +56,7 @@ command.if('start', function (args) {
 });
 
 command.if('help', function () {
-    debug.warn('sts [port]', 'start a static server in this dirname', true);
+    debug.warn('sts [port]', 'start a static server in current dirname', true);
     debug.warn('sts help', 'get help info', true);
     debug.warn('sts version', 'get version info', true);
 });
