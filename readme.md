@@ -29,6 +29,8 @@ sts 18080 your server name
 # VERSION
 ## v2.0.0
 - 全新交互方式，支持随机端口启动
+- 支持启动打开局域网 IP
+
 
 ## v1.x.x
 - 支持文件流读取
