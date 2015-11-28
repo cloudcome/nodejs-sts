@@ -11,13 +11,14 @@ var os = require('os');
 var dato = require('ydr-utils').dato;
 
 var scopeIP = null;
-var REG_SCOPE = /^192\.168\./;
+
 
 /**
  * 获取本机局域网 IP 地址
  * @returns {*|string}
  */
 module.exports = function () {
+    //console.log(os.networkInterfaces());
     dato.each(os.networkInterfaces(), function (networkType, networkList) {
         //{ address: 'fe80::1',
         //netmask: 'ffff:ffff:ffff:ffff::',
@@ -26,7 +27,7 @@ module.exports = function () {
         //scopeid: 1,
         //internal: true }
         dato.each(networkList, function (index, networkMeta) {
-            if (networkMeta.family === 'IPv4' && REG_SCOPE.test(networkMeta.address)) {
+            if (networkMeta.family === 'IPv4' && networkMeta.internal === false) {
                 scopeIP = networkMeta.address;
                 return false;
             }
