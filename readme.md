@@ -1,4 +1,9 @@
-#sts [![NPM version](https://img.shields.io/npm/v/sts.svg?style=flat)](https://npmjs.org/package/sts)
+#sts 
+
+[![NPM version](https://img.shields.io/npm/v/sts.svg?style=flat)](https://npmjs.org/package/sts)
+
+基于 NodeJS 的静态服务器
+
 **S**TATIC **T**RUSTED **S**ERVER => sts
 
 
